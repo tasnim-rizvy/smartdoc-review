@@ -1,7 +1,7 @@
 # Software Requirements Specification
 ## SmartDoc Review
 
-**Version:** 1.0  
+**Version:** 1.0.0
 **Date:** 2025-04-14  
 **Author:** Tasnim Rizvy
 
