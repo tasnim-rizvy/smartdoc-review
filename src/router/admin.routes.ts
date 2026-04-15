@@ -8,7 +8,7 @@ router.get('/logs', async (req, res) => {
     res.send('Logs retrieved');
 });
 
-router.get('stats', async (req, res) => {
+router.get('/stats', async (req, res) => {
     // Logic to retrieve stats here
     console.log('Retrieving stats');
     res.send('Stats retrieved');
