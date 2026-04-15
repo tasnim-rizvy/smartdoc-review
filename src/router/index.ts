@@ -1,11 +1,11 @@
-import AuthRoutes from './auth.routes';
-import AdminRoutes from './admin.routes';
-import DocumentRoutes from './documents.routes';
-import QueryRoutes from './query.routes';
+import authRoutes from './auth.routes';
+import adminRoutes from './admin.routes';
+import documentRoutes from './documents.routes';
+import queryRoutes from './query.routes';
 
 export {
-    AuthRoutes,
-    AdminRoutes,
-    DocumentRoutes,
-    QueryRoutes
+    authRoutes,
+    adminRoutes,
+    documentRoutes,
+    queryRoutes
 }
