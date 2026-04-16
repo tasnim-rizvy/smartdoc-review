@@ -54,6 +54,12 @@ export async function list(
 	next: NextFunction,
 ) {
 	try {
+		const db = getPool();
+		const result = await db.query(
+			`SELECT * FROM documents WHERE user_id = $1`,
+			[req.user?.id]
+		);
+		res.json(result.rows);
 	} catch (error) {
 		next(error);
 	}
@@ -61,6 +67,15 @@ export async function list(
 
 export async function get(req: AuthRequest, res: Response, next: NextFunction) {
 	try {
+		const db = getPool();
+		const result = await db.query(
+			`SELECT * FROM documents WHERE id = $1 AND user_id = $2`,
+			[req.params.id, req.user?.id]
+		);
+		if (result.rows.length === 0) {
+			return res.status(404).json({ error: 'Document not found' });
+		}
+		res.json(result.rows[0]);
 	} catch (error) {
 		next(error);
 	}
@@ -72,6 +87,15 @@ export async function remove(
 	next: NextFunction,
 ) {
 	try {
+		const db = getPool();
+		const result = await db.query(
+			`DELETE FROM documents WHERE id = $1 AND user_id = $2 RETURNING *`,
+			[req.params.id, req.user?.id]
+		);
+		if (result.rows.length === 0) {
+			return res.status(404).json({ error: 'Document not found' });
+		}
+		res.json({ message: 'Document deleted successfully' });
 	} catch (error) {
 		next(error);
 	}
