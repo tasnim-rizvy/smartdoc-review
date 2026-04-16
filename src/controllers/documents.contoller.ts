@@ -2,7 +2,7 @@ import { Multer } from 'multer';
 import { Response, NextFunction } from 'express';
 import fs from 'fs';
 import path from 'path';
-import pdfParse from 'pdf-parse';
+import { PDFParse } from 'pdf-parse';
 import { AuthRequest } from '../types';
 import { getPool } from '../services/postgres';
 
@@ -24,8 +24,9 @@ export async function upload(
 		const { filename, path: filepath, size } = req.file;
 
 		const buffer = fs.readFileSync(filepath);
-		const parsed = await pdfParse(buffer);
-		const pageCount = parsed.numpages;
+		const parser = new PDFParse({ data: buffer });
+		const info = await parser.getInfo();
+		const pageCount = info.total;
 
 		const db = getPool();
 		const result = await db.query(
