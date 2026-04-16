@@ -104,25 +104,53 @@ export async function login(req: Request, res: Response, next: NextFunction) {
 export async function refresh(req: Request, res: Response, next: NextFunction) {
 	try {
 		const { refreshToken } = req.body;
-        if (!refreshToken) {
-            return next(createError('Refresh token required', 400));
-        }
+		if (!refreshToken) {
+			return next(createError('Refresh token required', 400));
+		}
 
-        const payload = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET!) as jwt.JwtPayload;
-        const db = getPool();
-        const result = await db.query('SELECT id, email, role FROM users WHERE id = $1', [payload.sub]);
-        if (result.rows.length === 0) {
-            return next(createError('User not found', 404));
-        }
+		const stored = await getPool().query(
+			'SELECT id FROM refresh_tokens WHERE token = $1 AND expires_at > NOW()',
+			[refreshToken],
+		);
+		if (stored.rows.length === 0) {
+			return next(createError('Invalid refresh token', 401));
+		}
 
-        const user = result.rows[0];
-        const accessToken = generateAccess(user);
-        const newRefreshToken = generateRefresh(user);
+		const payload = jwt.verify(
+			refreshToken,
+			process.env.JWT_REFRESH_SECRET!,
+		) as jwt.JwtPayload;
+		const db = getPool();
+		const result = await db.query(
+			'SELECT id, email, role FROM users WHERE id = $1',
+			[payload.sub],
+		);
+		if (result.rows.length === 0) {
+			return next(createError('User not found', 404));
+		}
 
-        res.json({ accessToken, refreshToken: newRefreshToken });
+		const user = result.rows[0];
+		const accessToken = generateAccess(user);
+		const newRefreshToken = generateRefresh(user);
+
+		res.json({ accessToken, refreshToken: newRefreshToken });
 	} catch (error) {
 		next(error);
 	}
 }
 
-export async function logout(req: Request, res: Response, next: NextFunction) {}
+export async function logout(req: Request, res: Response, next: NextFunction) {
+	try {
+		const { refreshToken } = req.body;
+		if (!refreshToken) {
+			return next(createError('Refresh token required', 400));
+		}
+
+		await getPool().query('DELETE FROM refresh_tokens WHERE token = $1', [
+			refreshToken,
+		]);
+		res.json({ message: 'Logged out successfully' });
+	} catch (error) {
+		next(error);
+	}
+}
