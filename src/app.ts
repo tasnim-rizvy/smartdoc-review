@@ -3,7 +3,7 @@ import helmet from 'helmet';
 import morgan from 'morgan';
 import fs from 'fs';
 
-import { authRoutes, adminRoutes, documentRoutes, queryRoutes } from './router';
+import { authRoutes, adminRoutes, documentRoutes, queryRoutes } from './routes';
 
 const app = express();
 
