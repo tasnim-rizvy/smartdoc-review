@@ -19,7 +19,7 @@ export async function getLogs(
 }
 
 export async function getStats(
-	req: AuthRequest,
+	_req: AuthRequest,
 	res: Response,
 	next: NextFunction,
 ) {
