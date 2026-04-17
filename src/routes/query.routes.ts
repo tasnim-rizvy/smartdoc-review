@@ -1,17 +1,12 @@
 import { Router } from "express";
+import { authenticate } from "../middlewares/auth.middleware";
+import { getHistory, handleQuery } from "../controllers/query.controller";
 
 const router = Router();
 
-router.post('/', async (req, res) => {
-    // Logic to retrieve documents here
-    console.log('Retrieving response');
-    res.send('Response retrieved');
-});
+router.use(authenticate)
 
-router.get('/history', async (req, res) => {
-    // Logic to retrieve response history here
-    console.log('Retrieving response history');
-    res.send('Response history retrieved');
-});
+router.post('/', handleQuery);
+router.get('/history', getHistory);
 
 export default router;
