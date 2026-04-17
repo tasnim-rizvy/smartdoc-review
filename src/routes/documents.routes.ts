@@ -7,11 +7,8 @@ const router = Router();
 router.use(authenticate);
 
 router.post('/upload', upload);
-
 router.get('/', list);
-
 router.get('/:id', get);
-
 router.delete('/:id', remove);
 
 export default router;
