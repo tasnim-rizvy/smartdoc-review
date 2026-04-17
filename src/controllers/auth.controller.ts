@@ -1,28 +1,19 @@
 import { Request, Response, NextFunction } from 'express';
-import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 
-import { getPool } from '../services/postgres';
+import {
+	findUserByEmail,
+	findUserByEmailStrict,
+	createUser,
+	findUserById,
+	findRefreshToken,
+	deleteRefreshToken,
+	generateAccess,
+	generateRefresh,
+	hashPassword,
+	comparePassword,
+} from '../services/auth.service';
 import { createError } from '../middlewares/error.middleware';
-
-function generateAccess(user: { id: number; email: string; role: string }) {
-	const payload = {
-		sub: user.id,
-		email: user.email,
-		role: user.role,
-	};
-	return jwt.sign(payload, process.env.JWT_SECRET!, {
-		expiresIn: (process.env.JWT_EXPIRES_IN ??
-			'15m') as jwt.SignOptions['expiresIn'],
-	});
-}
-
-function generateRefresh(user: { id: number }) {
-	return jwt.sign({ sub: user.id }, process.env.JWT_REFRESH_SECRET!, {
-		expiresIn: (process.env.JWT_REFRESH_EXPIRES_IN ??
-			'7d') as jwt.SignOptions['expiresIn'],
-	});
-}
 
 export async function register(
 	req: Request,
@@ -31,21 +22,14 @@ export async function register(
 ) {
 	try {
 		const { email, password } = req.body;
-		const db = getPool();
 
-		const existing = await db.query('SELECT id FROM users WHERE email = $1', [
-			email,
-		]);
-		if (existing.rows.length > 0) {
+		const existing = await findUserByEmailStrict(email);
+		if (existing) {
 			return next(createError('Email already registered', 409));
 		}
 
-		const hashed = await bcrypt.hash(password, 12);
-		const result = await db.query(
-			'INSERT INTO users (email, password) VALUES ($1, $2) RETURNING id, email, role, created_at',
-			[email, hashed],
-		);
-		const user = result.rows[0];
+		const hashed = await hashPassword(password);
+		const user = await createUser(email, hashed);
 
 		const accessToken = generateAccess(user);
 		const refreshToken = generateRefresh(user);
@@ -68,18 +52,13 @@ export async function register(
 export async function login(req: Request, res: Response, next: NextFunction) {
 	try {
 		const { email, password } = req.body;
-		const db = getPool();
 
-		const result = await db.query(
-			'SELECT id, email, password, role FROM users WHERE email = $1',
-			[email],
-		);
-		if (result.rows.length === 0) {
+		const user = await findUserByEmail(email);
+		if (!user) {
 			return next(createError('Invalid credentials', 401));
 		}
 
-		const user = result.rows[0];
-		const isMatch = await bcrypt.compare(password, user.password);
+		const isMatch = await comparePassword(password, user.password);
 		if (!isMatch) {
 			return next(createError('Invalid credentials', 401));
 		}
@@ -108,11 +87,8 @@ export async function refresh(req: Request, res: Response, next: NextFunction) {
 			return next(createError('Refresh token required', 400));
 		}
 
-		const stored = await getPool().query(
-			'SELECT id FROM refresh_tokens WHERE token = $1 AND expires_at > NOW()',
-			[refreshToken],
-		);
-		if (stored.rows.length === 0) {
+		const stored = await findRefreshToken(refreshToken);
+		if (!stored) {
 			return next(createError('Invalid refresh token', 401));
 		}
 
@@ -120,16 +96,11 @@ export async function refresh(req: Request, res: Response, next: NextFunction) {
 			refreshToken,
 			process.env.JWT_REFRESH_SECRET!,
 		) as jwt.JwtPayload;
-		const db = getPool();
-		const result = await db.query(
-			'SELECT id, email, role FROM users WHERE id = $1',
-			[payload.sub],
-		);
-		if (result.rows.length === 0) {
+		const user = await findUserById(Number(payload.sub));
+		if (!user) {
 			return next(createError('User not found', 404));
 		}
 
-		const user = result.rows[0];
 		const accessToken = generateAccess(user);
 		const newRefreshToken = generateRefresh(user);
 
@@ -146,9 +117,7 @@ export async function logout(req: Request, res: Response, next: NextFunction) {
 			return next(createError('Refresh token required', 400));
 		}
 
-		await getPool().query('DELETE FROM refresh_tokens WHERE token = $1', [
-			refreshToken,
-		]);
+		await deleteRefreshToken(refreshToken);
 		res.json({ message: 'Logged out successfully' });
 	} catch (error) {
 		next(error);
