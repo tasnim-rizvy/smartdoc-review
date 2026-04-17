@@ -1,11 +1,16 @@
-import { Request } from 'express'
+import { Request } from 'express';
 
 export interface AuthUser {
-  id: string
-  email: string
-  role: 'user' | 'admin'
+	id: string;
+	email: string;
+	role: 'user' | 'admin';
 }
 
 export interface AuthRequest extends Request {
-  user?: AuthUser
+	user?: AuthUser;
+}
+
+export interface RAGResult {
+	stream: AsyncIterable<string>;
+	chunksRetrieved: number;
 }
