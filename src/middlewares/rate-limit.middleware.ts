@@ -7,7 +7,7 @@ const memoryStore = new Map<string, { count: number; expiresAt: number }>();
 const WINDOW_MS = parseInt(process.env.RATE_LIMIT_WINDOW_MS || '60000'); // 1 minute
 const MAX_REQUESTS = parseInt(process.env.RATE_LIMIT_MAX_REQUESTS || '10'); // 10 requests per window
 
-export async function rateLimit(
+export async function rateLimiter(
 	req: AuthRequest,
 	res: Response,
 	next: NextFunction,
