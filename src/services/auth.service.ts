@@ -3,21 +3,11 @@ import jwt from 'jsonwebtoken';
 
 import { getPool } from '../db/postgres';
 
-export async function findUserByEmail(email: string, strictMode: boolean = false) {
-	const db = getPool();
-	const columns = strictMode ? 'id' : 'id, email, password, role';
-	const result = await db.query(
-		`SELECT ${columns} FROM users WHERE email = $1`,
-		[email],
-	);
-	return result.rows[0] ?? null;
-}
-
-export async function findUserById(id: number) {
+export async function findUser(parameter: 'email' | 'id', value: string | number) {
 	const db = getPool();
 	const result = await db.query(
-		'SELECT id, email, role FROM users WHERE id = $1',
-		[id],
+		'SELECT id, email, password, role FROM users WHERE $1 = $2',
+		[parameter, value],
 	);
 	return result.rows[0] ?? null;
 }

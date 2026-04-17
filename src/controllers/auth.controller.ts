@@ -2,9 +2,8 @@ import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 
 import {
-	findUserByEmail,
+	findUser,
 	createUser,
-	findUserById,
 	findRefreshToken,
 	deleteRefreshToken,
 	generateAccess,
@@ -22,7 +21,7 @@ export async function register(
 	try {
 		const { email, password } = req.body;
 
-		const existing = await findUserByEmail(email, true);
+		const existing = await findUser('email', email);
 		if (existing) {
 			return next(createError('Email already registered', 409));
 		}
@@ -52,7 +51,7 @@ export async function login(req: Request, res: Response, next: NextFunction) {
 	try {
 		const { email, password } = req.body;
 
-		const user = await findUserByEmail(email);
+		const user = await findUser('email', email);
 		if (!user) {
 			return next(createError('Invalid credentials', 401));
 		}
@@ -95,7 +94,7 @@ export async function refresh(req: Request, res: Response, next: NextFunction) {
 			refreshToken,
 			process.env.JWT_REFRESH_SECRET!,
 		) as jwt.JwtPayload;
-		const user = await findUserById(Number(payload.sub));
+		const user = await findUser('id', Number(payload.sub));
 		if (!user) {
 			return next(createError('User not found', 404));
 		}
