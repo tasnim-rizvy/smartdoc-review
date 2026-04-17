@@ -74,7 +74,7 @@ export async function queryDocuments(
 		['human', '{input}'],
 	]);
 
-	const chain = createStuffDocumentsChain({
+	const chain = await createStuffDocumentsChain({
 		llm,
 		prompt,
 		outputParser: new StringOutputParser(),
