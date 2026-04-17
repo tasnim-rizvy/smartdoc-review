@@ -3,7 +3,6 @@ import jwt from 'jsonwebtoken';
 
 import {
 	findUserByEmail,
-	findUserByEmailStrict,
 	createUser,
 	findUserById,
 	findRefreshToken,
@@ -23,7 +22,7 @@ export async function register(
 	try {
 		const { email, password } = req.body;
 
-		const existing = await findUserByEmailStrict(email);
+		const existing = await findUserByEmail(email, true);
 		if (existing) {
 			return next(createError('Email already registered', 409));
 		}
