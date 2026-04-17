@@ -32,8 +32,6 @@ docs/       → SRS, architecture, demo links
 
 ## Architecture Rules
 
-### Backend (`apps/api/`)
-
 **Layer order — always respect this:**
 ```
 Types → Services → Middleware → Models → Controllers → Routes → App
@@ -59,14 +57,6 @@ Do not import a higher layer into a lower one. For example, a service must not i
 - Always call `next()` or `next(err)` — never leave a request hanging.
 - Be stateless where possible.
 - The `rateLimitMiddleware` must always fall back to in-memory when Redis is unavailable. Do not remove this fallback.
-
-### Frontend (`apps/web/`)
-
-- All API calls go through `src/lib/api.ts`. Do not call `fetch()` directly in page components.
-- Auth state is managed exclusively in `src/lib/auth.tsx`. Do not duplicate auth logic in components.
-- Do not add client-side state management libraries (Redux, Zustand, etc.) — React state + context is sufficient for this project.
-- All pages under `dashboard/` are protected. The layout (`dashboard/layout.tsx`) handles the auth redirect — do not add redundant auth checks inside individual pages.
-- Streaming responses use the native `ReadableStream` API via SSE. Do not replace this with a library like `react-query` or `swr` for the chat endpoint.
 
 ---
 
