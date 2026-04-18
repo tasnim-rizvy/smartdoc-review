@@ -19,36 +19,6 @@ A RESTful API for document upload, management, and AI-powered query answering wi
 - **AI**: Google Gemini (text-embedding-004, gemini-2.5-flash)
 - **Testing**: Jest + ts-jest
 
-## Quick Start
-
-```bash
-# Install dependencies
-npm install
-
-# Start development server
-npm run dev
-
-# Run tests
-npm test
-```
-
-## API Endpoints
-
-| Method | Endpoint | Description | Auth |
-|--------|----------|-------------|------|
-| POST | `/api/auth/register` | Register new user | No |
-| POST | `/api/auth/login` | Login user | No |
-| POST | `/api/auth/refresh` | Refresh access token | No |
-| POST | `/api/auth/logout` | Logout user | Yes |
-| POST | `/api/documents/upload` | Upload PDF document | Yes |
-| GET | `/api/documents` | List user's documents | Yes |
-| GET | `/api/documents/:id` | Get document by ID | Yes |
-| DELETE | `/api/documents/:id` | Delete document | Yes |
-| POST | `/api/query` | Ask AI about document | Yes |
-| GET | `/api/admin/users` | List all users | Admin |
-| DELETE | `/api/admin/users/:id` | Delete user | Admin |
-| GET | `/api/health` | Health check | No |
-
 ## Environment Variables
 
 Create a `.env` file:
@@ -81,6 +51,36 @@ NODE_ENV=development
 RATE_LIMIT_WINDOW_MS=60000
 RATE_LIMIT_MAX_REQUESTS=10
 ```
+
+## Quick Start
+
+```bash
+# Install dependencies
+npm install
+
+# Start development server
+npm run dev
+
+# Run tests
+npm test
+```
+
+## API Endpoints
+
+| Method | Endpoint | Description | Auth |
+|--------|----------|-------------|------|
+| POST | `/api/auth/register` | Register new user | No |
+| POST | `/api/auth/login` | Login user | No |
+| POST | `/api/auth/refresh` | Refresh access token | No |
+| POST | `/api/auth/logout` | Logout user | Yes |
+| POST | `/api/documents/upload` | Upload PDF document | Yes |
+| GET | `/api/documents` | List user's documents | Yes |
+| GET | `/api/documents/:id` | Get document by ID | Yes |
+| DELETE | `/api/documents/:id` | Delete document | Yes |
+| POST | `/api/query` | Ask AI about document | Yes |
+| GET | `/api/admin/users` | List all users | Admin |
+| DELETE | `/api/admin/users/:id` | Delete user | Admin |
+| GET | `/api/health` | Health check | No |
 
 ## Project Structure
 
@@ -120,15 +120,3 @@ npm run watch
 npm run build
 npm start
 ```
-
----
-
-**Ready for frontend?** Yes. The API is ready with:
-- Proper authentication flow (register/login/refresh/logout)
-- Document CRUD endpoints
-- RAG query endpoint
-- Rate limiting
-- Input validation
-- Health check endpoint
-
-The frontend can integrate at `http://localhost:4000` (development) or set `NEXT_PUBLIC_API_URL` in `.env`.
