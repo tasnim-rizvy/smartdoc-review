@@ -1,8 +1,8 @@
 import { getPool } from '../db/postgres';
 
 export interface DocumentRow {
-	id: number;
-	user_id: number;
+	id: string;
+	user_id: string;
 	filename: string;
 	filepath: string;
 	size_bytes: number;

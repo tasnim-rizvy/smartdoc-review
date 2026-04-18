@@ -1,6 +1,7 @@
 import express from 'express';
 import helmet from 'helmet';
 import morgan from 'morgan';
+import cors from 'cors';
 import fs from 'fs';
 
 import { authRoutes, adminRoutes, documentRoutes, queryRoutes } from './routes';
@@ -11,6 +12,7 @@ const uploadDir = process.env.UPLOAD_DIR || './uploads'
 if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, { recursive: true })
 
 // ─── Middleware ───────────────────────────────────────────
+app.use(cors())
 app.use(helmet())
 app.use(morgan('dev'))
 app.use(express.json({ limit: '1mb' }))

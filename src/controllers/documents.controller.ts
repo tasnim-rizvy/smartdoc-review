@@ -61,7 +61,7 @@ export async function list(
 			return res.status(401).json({ error: 'Unauthorized' });
 		}
 		const docs = await findDocuments(undefined, req.user.id);
-		res.json(docs);
+		res.json({ documents: docs });
 	} catch (error) {
 		next(error);
 	}

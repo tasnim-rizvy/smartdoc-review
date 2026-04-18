@@ -6,6 +6,7 @@ import {
 	createUser,
 	findRefreshToken,
 	deleteRefreshToken,
+	saveRefreshToken,
 	generateAccess,
 	generateRefresh,
 	hashPassword,
@@ -31,6 +32,7 @@ export async function register(
 
 		const accessToken = generateAccess(user);
 		const refreshToken = generateRefresh(user);
+		await saveRefreshToken(user.id, refreshToken);
 
 		res.status(201).json({
 			user: {
@@ -63,6 +65,7 @@ export async function login(req: Request, res: Response, next: NextFunction) {
 
 		const accessToken = generateAccess(user);
 		const refreshToken = generateRefresh(user);
+		await saveRefreshToken(user.id, refreshToken);
 
 		res.json({
 			user: {
@@ -94,13 +97,16 @@ export async function refresh(req: Request, res: Response, next: NextFunction) {
 			refreshToken,
 			process.env.JWT_REFRESH_SECRET!,
 		) as jwt.JwtPayload;
-		const user = await findUser('id', Number(payload.sub));
+		const user = await findUser('id', payload.sub);
 		if (!user) {
 			return next(createError('User not found', 404));
 		}
 
 		const accessToken = generateAccess(user);
 		const newRefreshToken = generateRefresh(user);
+
+		await deleteRefreshToken(refreshToken);
+		await saveRefreshToken(user.id, newRefreshToken);
 
 		res.json({ accessToken, refreshToken: newRefreshToken });
 	} catch (error) {

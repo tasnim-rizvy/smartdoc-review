@@ -23,7 +23,7 @@ export function authenticate(
 			process.env.JWT_SECRET!,
 		) as jwt.JwtPayload;
 		req.user = {
-			id: payload.id,
+			id: payload.sub,
 			email: payload.email,
 			role: payload.role,
 		};
