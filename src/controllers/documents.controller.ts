@@ -29,7 +29,16 @@ export async function upload(
 		const buffer = fs.readFileSync(filepath);
 		const parser = new PDFParse({ data: buffer });
 		const info = await parser.getInfo();
-		const pageCount = info.total;
+		const pageCount = info.numPages;
+
+		const textResult = await parser.getText();
+		const text = textResult.text.trim();
+
+		if (!text || text.length < 50) {
+			return next(createError('Could not extract enough text from PDF. The PDF may be scanned or image-based.', 400));
+		}
+
+		console.log('Extracted text length:', text.length);
 
 		const doc = await createDocument(
 			userId,
@@ -39,7 +48,6 @@ export async function upload(
 			pageCount,
 		);
 
-		const text = buffer.toString('utf-8');
 		await indexDocuments(doc.id, text);
 
 		res.status(201).json({
