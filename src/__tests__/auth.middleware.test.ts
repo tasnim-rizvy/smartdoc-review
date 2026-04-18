@@ -41,7 +41,7 @@ describe('authenticate middleware', () => {
 
 	it('calls next and sets req.user for valid token', () => {
 		const token = jwt.sign(
-			{ userId: 'user-123', email: 'test@test.com', role: 'user' },
+			{ id: 'user-123', email: 'test@test.com', role: 'user' },
 			process.env.JWT_SECRET!,
 		);
 		const req = { headers: { authorization: `Bearer ${token}` } } as Request;

@@ -55,7 +55,7 @@ describe('validate middleware', () => {
 			const req = {
 				body: {
 					document_id: '550e8400-e29b-41d4-a716-446655440000',
-					prompt: 'What is this about?',
+					query: 'What is this about?',
 				},
 			} as Request;
 			middleware(req, mockRes(), next);
@@ -66,7 +66,7 @@ describe('validate middleware', () => {
 			const req = {
 				body: {
 					document_id: '550e8400-e29b-41d4-a716-446655440000',
-					prompt: 'a'.repeat(1001),
+					query: 'a'.repeat(2001),
 				},
 			} as Request;
 			const res = mockRes();
@@ -74,11 +74,11 @@ describe('validate middleware', () => {
 			expect(res.status).toHaveBeenCalledWith(400);
 		});
 
-		it('rejects script injection in prompt', () => {
+		it('rejects script injection in query', () => {
 			const req = {
 				body: {
 					document_id: '550e8400-e29b-41d4-a716-446655440000',
-					prompt: '<script>alert("xss")</script>',
+					query: '<script>alert("xss")</script>',
 				},
 			} as Request;
 			const res = mockRes();
@@ -88,7 +88,7 @@ describe('validate middleware', () => {
 
 		it('rejects invalid UUID for document_id', () => {
 			const req = {
-				body: { document_id: 'not-a-uuid', prompt: 'Valid question here?' },
+				body: { document_id: 'not-a-uuid', query: 'Valid question here?' },
 			} as Request;
 			const res = mockRes();
 			middleware(req, res, next);

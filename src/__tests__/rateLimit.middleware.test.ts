@@ -32,10 +32,12 @@ describe('rateLimiter (in-memory fallback)', () => {
 		expect(next).toHaveBeenCalled();
 	});
 
-	it('calls next if no user is set', async () => {
+	it('returns 401 if no user is set', async () => {
 		const req = { user: undefined } as AuthRequest;
-		await rateLimiter(req, mockRes(), next);
-		expect(next).toHaveBeenCalled();
+		const res = mockRes();
+		await rateLimiter(req, res, next);
+		expect(res.status).toHaveBeenCalledWith(401);
+		expect(next).not.toHaveBeenCalled();
 	});
 
 	it('returns 429 after exceeding limit', async () => {

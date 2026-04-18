@@ -9,11 +9,7 @@ import {
 } from '../services/documents.service';
 
 interface UploadRequest extends AuthRequest {
-	file?: {
-		originalname: string;
-		path: string;
-		size: number;
-	};
+	file?: Express.Multer.File;
 }
 
 export async function upload(
