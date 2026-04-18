@@ -1,7 +1,7 @@
-import { Router } from "express";
-import { authenticate } from "../middlewares/auth.middleware";
-import { upload, list, get, remove } from "../controllers/documents.contoller";
-import { uploadMiddleware } from "../middlewares/upload.middleware";
+import { Router } from 'express';
+import { authenticate } from '../middlewares/auth.middleware';
+import { upload, list, get, remove } from '../controllers/documents.controller';
+import { uploadMiddleware } from '../middlewares/upload.middleware';
 
 const router = Router();
 

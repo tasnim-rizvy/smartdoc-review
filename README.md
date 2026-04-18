@@ -98,11 +98,13 @@ Client Request
 | `POST` | `/api/auth/logout` | ✓ | Invalidate refresh token |
 
 **Register / Login request body:**
+
 ```json
 { "email": "user@example.com", "password": "minlength8" }
 ```
 
 **Register / Login response:**
+
 ```json
 {
   "user": { "id": "uuid", "email": "user@example.com", "role": "user" },
@@ -125,6 +127,7 @@ All routes require `Authorization: Bearer <accessToken>`
 | `DELETE` | `/api/documents/:id` | Delete document and remove from vector store |
 
 **Upload response:**
+
 ```json
 {
   "id": "uuid",
@@ -150,6 +153,7 @@ Requires `Authorization: Bearer <accessToken>`
 | `GET` | `/api/query/history` | Get current user's query history |
 
 **Query request body:**
+
 ```json
 {
   "document_id": "valid-uuid",
@@ -158,6 +162,7 @@ Requires `Authorization: Bearer <accessToken>`
 ```
 
 **Query response** — Server-Sent Events stream (`Content-Type: text/event-stream`):
+
 ```
 data: {"token":"The"}
 data: {"token":" key"}
@@ -167,6 +172,7 @@ data: {"done":true}
 ```
 
 **On rate limit (429):**
+
 ```json
 {
   "message": "Rate limit exceeded. Please slow down.",
@@ -175,6 +181,7 @@ data: {"done":true}
 ```
 
 **Rate limit headers on every query response:**
+
 ```
 X-RateLimit-Limit: 10
 X-RateLimit-Remaining: 7
@@ -183,6 +190,7 @@ Retry-After: 60   (only on 429)
 ```
 
 **History response:**
+
 ```json
 {
   "logs": [
@@ -215,6 +223,7 @@ Requires `Authorization: Bearer <accessToken>` and `role: "admin"`
 | `GET` | `/api/admin/logs` | All query logs (paginated) |
 
 **Stats response:**
+
 ```json
 {
   "totalQueries": 1284,
@@ -236,6 +245,7 @@ Requires `Authorization: Bearer <accessToken>` and `role: "admin"`
 ### PostgreSQL
 
 **`users`**
+
 ```sql
 id          UUID PRIMARY KEY DEFAULT gen_random_uuid()
 email       VARCHAR(255) UNIQUE NOT NULL
@@ -245,6 +255,7 @@ created_at  TIMESTAMP DEFAULT NOW()
 ```
 
 **`documents`**
+
 ```sql
 id          UUID PRIMARY KEY DEFAULT gen_random_uuid()
 user_id     UUID REFERENCES users(id) ON DELETE CASCADE
@@ -256,6 +267,7 @@ created_at  TIMESTAMP DEFAULT NOW()
 ```
 
 **`refresh_tokens`**
+
 ```sql
 id          UUID PRIMARY KEY DEFAULT gen_random_uuid()
 user_id     UUID REFERENCES users(id) ON DELETE CASCADE
@@ -383,7 +395,7 @@ src/
 │
 ├── controllers/
 │   ├── auth.controller.ts
-│   ├── documents.contoller.ts
+│   ├── documents.controller.ts
 │   ├── query.controller.ts
 │   └── admin.controller.ts
 │
