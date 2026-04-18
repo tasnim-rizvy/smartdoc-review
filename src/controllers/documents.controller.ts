@@ -7,6 +7,7 @@ import {
 	findDocuments,
 	deleteDocument,
 } from '../services/documents.service';
+import { indexDocuments } from '../services/rag.service';
 
 interface UploadRequest extends AuthRequest {
 	file?: Express.Multer.File;
@@ -38,13 +39,16 @@ export async function upload(
 			pageCount,
 		);
 
+		const text = buffer.toString('utf-8');
+		await indexDocuments(doc.id, text);
+
 		res.status(201).json({
 			id: doc.id,
 			filename: doc.filename,
 			size_bytes: doc.size_bytes,
 			page_count: doc.page_count,
 			created_at: doc.created_at,
-			status: 'indexing',
+			status: 'ready',
 		});
 	} catch (error) {
 		next(error);

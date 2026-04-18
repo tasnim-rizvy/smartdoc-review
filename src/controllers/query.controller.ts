@@ -36,18 +36,33 @@ export async function handleQuery(
 	let tokenUsed = 0;
 
 	try {
+		console.log('Calling queryDocuments for doc:', document_id);
 		const { stream, chunksRetrieved } = await queryDocuments(
 			document_id,
 			query,
 		);
+		console.log('Got stream, chunksRetrieved:', chunksRetrieved);
 
+		let chunkCount = 0;
+		let hasStarted = false;
+		
 		for await (const chunk of stream) {
-			fullResponse += chunk;
-			tokenUsed += chunk.split(' ').length;
+			hasStarted = true;
+			chunkCount++;
+			const text = typeof chunk === 'string' ? chunk : String(chunk);
+			fullResponse += text;
+			tokenUsed += text.split(' ').length;
+			console.log('Chunk', chunkCount, ':', text.slice(0, 50));
 
-			res.write(`data: ${JSON.stringify({ token: chunk })}\n\n`);
+			res.write(`data: ${JSON.stringify({ token: text })}\n\n`);
 		}
 
+		if (!hasStarted) {
+			console.log('Stream was empty');
+			res.write(`data: ${JSON.stringify({ token: 'No response generated.' })}\n\n`);
+		}
+		
+		console.log('Total chunks:', chunkCount);
 		res.write(`data: ${JSON.stringify({ done: true })}\n\n`);
 		res.end();
 
@@ -70,6 +85,7 @@ export async function handleQuery(
 			rate_limited: false,
 		}).catch((err) => console.error('Failed to save query log:', err));
 	} catch (err: any) {
+		console.error('Error in handleQuery:', err);
 		const errorMsg = err.message || 'Failed to process query';
 		res.write(`data: ${JSON.stringify({ error: errorMsg })}\n\n`);
 		res.end();
