@@ -1,6 +1,6 @@
 # SmartDoc Review — Backend API
 
-> Production-ready REST API for AI-powered document Q&A. Upload a PDF, ask questions, get streamed answers grounded in your document — with full audit logging, JWT auth, and per-user rate limiting.
+Production-ready REST API for AI-powered document Q&A. Upload a PDF, ask questions, get streamed answers grounded in your document — with full audit logging, JWT auth, and per-user rate limiting.
 
 ![TypeScript](https://img.shields.io/badge/TypeScript-strict-7c6dfa?style=flat-square)
 ![Tests](https://img.shields.io/badge/tests-passing-00e5a0?style=flat-square)
