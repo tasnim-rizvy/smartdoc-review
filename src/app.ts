@@ -8,11 +8,17 @@ import { authRoutes, adminRoutes, documentRoutes, queryRoutes } from './routes';
 
 const app = express();
 
-const uploadDir = process.env.UPLOAD_DIR || './uploads'
+const uploadDir = process.env.UPLOAD_DIR || './tmp/uploads'
 if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, { recursive: true })
 
 // ─── Middleware ───────────────────────────────────────────
-app.use(cors())
+app.use(cors({
+	origin: [
+		'http://localhost:3000',
+		process.env.FRONTEND_URL || ''
+	].filter(Boolean),
+	credentials: true
+}))
 app.use(helmet())
 app.use(morgan('dev'))
 app.use(express.json({ limit: '1mb' }))
