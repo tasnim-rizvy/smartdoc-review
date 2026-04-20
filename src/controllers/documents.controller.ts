@@ -2,6 +2,7 @@ import { Response, NextFunction } from 'express';
 import fs from 'fs';
 import { PDFParse } from 'pdf-parse';
 import { AuthRequest } from '../types';
+import { createError } from '../middlewares/error.middleware';
 import {
 	createDocument,
 	findDocuments,
@@ -28,8 +29,8 @@ export async function upload(
 
 		const buffer = fs.readFileSync(filepath);
 		const parser = new PDFParse({ data: buffer });
-		const info = await parser.getInfo();
-		const pageCount = info.numPages;
+		const info = await parser.getInfo() as { numPages?: number };
+		const pageCount = info.numPages ?? 0;
 
 		const textResult = await parser.getText();
 		const text = textResult.text.trim();

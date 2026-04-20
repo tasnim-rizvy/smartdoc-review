@@ -97,7 +97,7 @@ export async function refresh(req: Request, res: Response, next: NextFunction) {
 			refreshToken,
 			process.env.JWT_REFRESH_SECRET!,
 		) as jwt.JwtPayload;
-		const user = await findUser('id', payload.sub);
+		const user = await findUser('id', payload.sub!);
 		if (!user) {
 			return next(createError('User not found', 404));
 		}
