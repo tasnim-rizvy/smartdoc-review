@@ -8,6 +8,13 @@
         "test:api": "npm run test -w apps/api",
         "start:api": "npm run start -w apps/api"
     },
+    "devDependencies": {
+        "@types/jest": "^30.0.0",
+        "jest": "^30.3.0",
+        "ts-jest": "^29.4.9",
+        "ts-node-dev": "^2.0.0",
+        "typescript": "^6.0.2"
+    },
     "repository": {
         "type": "git",
         "url": "git+https://github.com/tasnim-rizvy/smartdoc-review.git"
