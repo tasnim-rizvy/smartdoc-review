@@ -4,21 +4,15 @@ import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { getAccessToken } from '@/lib/auth';
 
-export default function Home() {
+export function AuthGuard({ children }: { children: React.ReactNode }) {
   const router = useRouter();
 
   useEffect(() => {
     const token = getAccessToken();
-    if (token) {
-      router.push('/documents');
-    } else {
+    if (!token) {
       router.push('/login');
     }
   }, [router]);
 
-  return (
-    <main className="flex min-h-screen items-center justify-center">
-      <p className="text-muted-foreground">Redirecting...</p>
-    </main>
-  );
+  return <>{children}</>;
 }
