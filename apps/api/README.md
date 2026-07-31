@@ -135,11 +135,11 @@ All routes require `Authorization: Bearer <accessToken>`
   "size_bytes": 204800,
   "page_count": 12,
   "created_at": "2025-04-14T10:00:00Z",
-  "status": "indexing"
+  "status": "ready"
 }
 ```
 
-> `status: "indexing"` means the RAG pipeline is running asynchronously. Wait 3–10 seconds before querying, depending on PDF size.
+> `status: "ready"` — the RAG pipeline runs synchronously during upload; the document is already indexed and searchable when the response is returned. No polling or wait needed before querying.
 
 ---
 
