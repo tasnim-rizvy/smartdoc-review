@@ -14,7 +14,7 @@ Production-ready REST API for AI-powered document Q&A. Upload a PDF, ask questio
 Users authenticate, upload PDF documents, and ask natural-language questions about them. The API:
 
 1. **Parses and chunks** the PDF on upload using `pdf-parse`
-2. **Embeds each chunk** using Google Gemini's `text-embedding-004` model
+2. **Embeds each chunk** using Google Gemini's `gemini-embedding-2` model
 3. **Stores embeddings** in an in-memory vector store (LangChain `MemoryVectorStore`)
 4. **On each query**, retrieves the top-5 most relevant chunks, sends them as context to `gemini-2.5-flash`, and **streams the response** token-by-token via SSE
 5. **Logs every query** to MongoDB with user ID, tokens used, latency, and chunk count
@@ -29,7 +29,7 @@ Users authenticate, upload PDF documents, and ask natural-language questions abo
 | Runtime | Node.js 20, TypeScript (strict) |
 | Framework | Express.js |
 | AI / LLM | Google Gemini API (`gemini-2.5-flash`) |
-| Embeddings | Google Gemini (`text-embedding-004`) |
+| Embeddings | Google Gemini (`gemini-embedding-2`) |
 | RAG Framework | LangChain (`@langchain/google-genai`, `langchain`) |
 | Primary Database | PostgreSQL — users, documents, refresh tokens |
 | Audit Database | MongoDB — query logs |
