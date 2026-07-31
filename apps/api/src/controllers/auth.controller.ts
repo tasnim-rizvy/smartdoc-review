@@ -72,6 +72,7 @@ export async function login(req: Request, res: Response, next: NextFunction) {
 				id: user.id,
 				email: user.email,
 				role: user.role,
+				createdAt: user.created_at,
 			},
 			accessToken,
 			refreshToken,
