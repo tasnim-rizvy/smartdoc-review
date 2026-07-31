@@ -3,8 +3,9 @@ dist/
 .next/
 .env
 *.env.local
+apps/api/tsconfig.tsbuildinfo
 uploads/
 coverage/
 *.log
 .DS_Store
-*-lock.jsonapps/api/tsconfig.tsbuildinfo
+*-lock.json
