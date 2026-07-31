@@ -84,9 +84,9 @@ export async function handleQuery(
 			chunks_retrieved: chunksRetrieved,
 			rate_limited: false,
 		}).catch((err) => console.error('Failed to save query log:', err));
-	} catch (err: any) {
+	} catch (err) {
 		console.error('Error in handleQuery:', err);
-		const errorMsg = err.message || 'Failed to process query';
+		const errorMsg = err instanceof Error ? err.message : 'Failed to process query';
 		res.write(`data: ${JSON.stringify({ error: errorMsg })}\n\n`);
 		res.end();
 
