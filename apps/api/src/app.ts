@@ -5,6 +5,7 @@ import cors from 'cors';
 import fs from 'fs';
 
 import { authRoutes, adminRoutes, documentRoutes, queryRoutes } from './routes';
+import { errorHandler } from './middlewares/error.middleware';
 
 const app = express();
 
@@ -33,5 +34,7 @@ app.use('/api/admin', adminRoutes)
 app.get('/api/health', (_req, res) => {
 	res.json({ status: 'ok', timestamp: new Date().toISOString() })
 });
+
+app.use(errorHandler);
 
 export default app
