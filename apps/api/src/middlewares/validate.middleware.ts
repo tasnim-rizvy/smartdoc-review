@@ -36,3 +36,11 @@ export const querySchema = z.object({
 		),
 	document_id: z.string().uuid('Invalid document ID'),
 });
+
+export const refreshSchema = z.object({
+	refresh_token: z.string().min(1, 'Refresh token is required'),
+});
+
+export const logoutSchema = z.object({
+	refresh_token: z.string().min(1, 'Refresh token is required'),
+});
