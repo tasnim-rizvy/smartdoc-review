@@ -48,16 +48,27 @@ export async function rateLimiter(
 		}
 	} catch {
 		const entry = memoryStore.get(key);
+		const resetAt = Math.ceil((now + WINDOW_MS) / 1000);
+
 		if (entry && entry.expiresAt > now) {
 			entry.count++;
+			res.setHeader('X-RateLimit-Limit', MAX_REQUESTS);
+			res.setHeader('X-RateLimit-Remaining', Math.max(0, MAX_REQUESTS - entry.count));
+			res.setHeader('X-RateLimit-Reset', Math.ceil(entry.expiresAt / 1000));
+
 			if (entry.count > MAX_REQUESTS) {
-				res
-					.status(429)
-					.json({ message: 'Rate limit exceeded.', retryAfter: 60 });
+				res.setHeader('Retry-After', Math.ceil((entry.expiresAt - now) / 1000));
+				res.status(429).json({
+					message: 'Rate limit exceeded.',
+					retryAfter: Math.ceil((entry.expiresAt - now) / 1000),
+				});
 				return;
 			}
 		} else {
 			memoryStore.set(key, { count: 1, expiresAt: now + WINDOW_MS });
+			res.setHeader('X-RateLimit-Limit', MAX_REQUESTS);
+			res.setHeader('X-RateLimit-Remaining', MAX_REQUESTS - 1);
+			res.setHeader('X-RateLimit-Reset', resetAt);
 		}
 	}
 
