@@ -21,7 +21,7 @@ export async function upload(
 ) {
 	try {
 		if (!req.file || !req.user?.id) {
-			return res.status(401).json({ error: 'Unauthorized' });
+			return next(createError('Unauthorized', 401));
 		}
 
 		const userId = req.user.id;
@@ -71,7 +71,7 @@ export async function list(
 ) {
 	try {
 		if (!req.user?.id) {
-			return res.status(401).json({ error: 'Unauthorized' });
+			return next(createError('Unauthorized', 401));
 		}
 		const docs = await findDocuments(undefined, req.user.id);
 		res.json({ documents: docs });
@@ -83,12 +83,12 @@ export async function list(
 export async function get(req: AuthRequest, res: Response, next: NextFunction) {
 	try {
 		if (!req.user?.id) {
-			return res.status(401).json({ error: 'Unauthorized' });
+			return next(createError('Unauthorized', 401));
 		}
 		const id = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
 		const docs = await findDocuments(id, req.user.id);
 		if (docs.length === 0) {
-			return res.status(404).json({ error: 'Document not found' });
+			return next(createError('Document not found', 404));
 		}
 		res.json(docs[0]);
 	} catch (error) {
@@ -103,12 +103,12 @@ export async function remove(
 ) {
 	try {
 		if (!req.user?.id) {
-			return res.status(401).json({ error: 'Unauthorized' });
+			return next(createError('Unauthorized', 401));
 		}
 		const id = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
 		const doc = await deleteDocument(id, req.user.id);
 		if (!doc) {
-			return res.status(404).json({ error: 'Document not found' });
+			return next(createError('Document not found', 404));
 		}
 		res.json({ message: 'Document deleted successfully' });
 	} catch (error) {
