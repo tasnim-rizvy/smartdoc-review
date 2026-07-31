@@ -5,6 +5,9 @@
     "scripts": {
         "dev:api": "npm run dev -w apps/api",
         "dev:web": "npm run dev -w apps/web",
+        "db:up": "docker compose up -d",
+        "db:down": "docker compose down",
+        "db:logs": "docker compose logs -f",
         "build:api": "npm run build -w apps/api",
         "build:web": "npm run build -w apps/web",
         "test:api": "npm run test -w apps/api",

@@ -7,4 +7,7 @@ uploads/
 coverage/
 *.log
 .DS_Store
-*-lock.jsonapps/api/tsconfig.tsbuildinfo
+*-lock.json
+.git/
+apps/web/
+docs/
