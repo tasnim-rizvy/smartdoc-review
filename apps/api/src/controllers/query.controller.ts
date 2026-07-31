@@ -16,10 +16,16 @@ export async function handleQuery(
 	const userId = req.user!.id;
 
 	const db = getPool();
-	const docResult = await db.query(
-		'SELECT * FROM documents WHERE id = $1 AND user_id = $2',
-		[document_id, userId],
-	);
+	let docResult;
+	try {
+		docResult = await db.query(
+			'SELECT * FROM documents WHERE id = $1 AND user_id = $2',
+			[document_id, userId],
+		);
+	} catch (err) {
+		console.error('Failed to verify document ownership:', err);
+		return next(createError('Failed to verify document ownership', 500));
+	}
 
 	if (docResult.rows.length === 0) {
 		return next(createError('Document not found', 404));
