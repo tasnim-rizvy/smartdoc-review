@@ -19,16 +19,15 @@ function fileFilter(
 	file: Express.Multer.File,
 	cb: multer.FileFilterCallback,
 ) {
-	const allowedTypes = ['application/pdf', 'image/jpeg', 'image/png'];
-	if (allowedTypes.includes(file.mimetype)) {
+	if (file.mimetype === 'application/pdf') {
 		cb(null, true);
 	} else {
-		cb(new Error('Only PDF, JPEG, and PNG files are allowed'));
+		cb(new Error('Only PDF files are allowed'));
 	}
 }
 
 export const uploadMiddleware = multer({
 	storage,
 	fileFilter,
-	limits: { fileSize: 5 * 1024 * 1024 },
+	limits: { fileSize: 10 * 1024 * 1024 },
 });
